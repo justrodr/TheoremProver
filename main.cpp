@@ -238,13 +238,165 @@ Theorem constructRR() {
     clause3.literals.push_back(l3_3);
     rrTheorem.clauses.push_back(clause3);
 
-    return rrTheorem;
+    Clause clause4 = Clause(4);
+    Literal l4_1 = Literal(Predicate("coyote"));
+    Literal l4_2 = Literal(Predicate("rr"));
+    Literal l4_3 = Literal(Predicate("catch"));
+    Literal l4_4 = Literal(Predicate("smart"));
+    l4_1.isPositive = false;
+    l4_1.terms.push_back(Term("w", false));
+    l4_2.isPositive = false;
+    l4_2.terms.push_back(Term("u", false));
+    l4_3.isPositive = false;
+    l4_3.terms.push_back(Term("w", false));
+    l4_3.terms.push_back(Term("u", false));
+    l4_4.isPositive = false;
+    l4_4.terms.push_back(Term("u", false));
+    clause4.literals.push_back(l4_1);
+    clause4.literals.push_back(l4_2);
+    clause4.literals.push_back(l4_3);
+    clause4.literals.push_back(l4_4);
+    rrTheorem.clauses.push_back(clause4);
 
+    Clause clause5 = Clause(5);
+    Literal l5_1 = Literal(Predicate("frustrated"));
+    Literal l5_2 = Literal(Predicate("catch"));
+    Literal l5_3 = Literal(Predicate("coyote"));
+    Literal l5_4 = Literal(Predicate("rr"));
+    Literal l5_5 = Literal(Predicate("chase"));
+    l5_1.isPositive = true;
+    l5_1.terms.push_back(Term("s", false));
+    l5_2.isPositive = true;
+    l5_2.terms.push_back(Term("s", false));
+    l5_2.terms.push_back(Term("t", false));
+    l5_3.isPositive = false;
+    l5_3.terms.push_back(Term("s", false));
+    l5_4.isPositive = false;
+    l5_4.terms.push_back(Term("t", false));
+    l5_5.isPositive = false;
+    l5_5.terms.push_back(Term("s", false));
+    l5_5.terms.push_back(Term("t", false));
+    clause5.literals.push_back(l5_1);
+    clause5.literals.push_back(l5_2);
+    clause5.literals.push_back(l5_3);
+    clause5.literals.push_back(l5_4);
+    clause5.literals.push_back(l5_5);
+    rrTheorem.clauses.push_back(clause5);
+
+    Clause clause6 = Clause(6);
+    Literal l6_1 = Literal(Predicate("beep"));
+    Literal l6_2 = Literal(Predicate("rr"));
+    l6_1.isPositive = true;
+    l6_1.terms.push_back(Term("r", false));
+    l6_2.isPositive = false;
+    l6_2.terms.push_back(Term("r", false));
+    clause6.literals.push_back(l6_1);
+    clause6.literals.push_back(l6_2);
+    rrTheorem.clauses.push_back(clause6);
+
+    Clause clause7 = Clause(7);
+    Literal l7_1 = Literal(Predicate("coyote"));
+    l7_1.isPositive = true;
+    l7_1.terms.push_back(Term("b", true));
+    clause7.literals.push_back(l7_1);
+    rrTheorem.clauses.push_back(clause7);
+
+    Clause clause8 = Clause(8);
+    Literal l8_1 = Literal(Predicate("frustrated"));
+    l8_1.isPositive = false;
+    l8_1.terms.push_back(Term("b", true));
+    clause8.literals.push_back(l8_1);
+    rrTheorem.clauses.push_back(clause8);
+
+    rrTheorem.startSolutionIndex = 6;
+
+    return rrTheorem;
 }
 
-// Theorem constructCustoms() {
+Theorem constructCustoms() {
+    Theorem customsTheorem = Theorem("customs");
 
-// }
+    Clause clause1 = Clause(1);
+    Literal l1_1 = Literal(Predicate("v"));
+    Literal l1_2 = Literal(Predicate("s"));
+    Literal l1_3 = Literal(Predicate("e"));
+    l1_1.isPositive = true;
+    l1_1.terms.push_back(Term("x", false));
+    l1_2.isPositive = true;
+    l1_2.terms.push_back(Term("x", false));
+    l1_2.terms.push_back(Term("f(x)", false));
+    l1_3.isPositive = false;
+    l1_3.terms.push_back(Term("x", false));
+    clause1.literals.push_back(l1_1);
+    clause1.literals.push_back(l1_2);
+    clause1.literals.push_back(l1_3);
+    customsTheorem.clauses.push_back(clause1);
+
+    Clause clause2 = Clause(2);
+    Literal l2_1 = Literal(Predicate("v"));
+    Literal l2_2 = Literal(Predicate("c"));
+    Literal l2_3 = Literal(Predicate("e"));
+    l2_1.isPositive = true;
+    l2_1.terms.push_back(Term("y", false));
+    l2_2.isPositive = true;
+    l2_2.terms.push_back(Term("f(y)", false));
+    l2_3.isPositive = false;
+    l2_3.terms.push_back(Term("y", false));
+    clause2.literals.push_back(l2_1);
+    clause2.literals.push_back(l2_2);
+    clause2.literals.push_back(l2_3);
+    customsTheorem.clauses.push_back(clause2);
+
+    Clause clause3 = Clause(3);
+    Literal l3_1 = Literal(Predicate("e"));
+    l3_1.isPositive = true;
+    l3_1.terms.push_back(Term("a", true));
+    clause3.literals.push_back(l3_1);
+    customsTheorem.clauses.push_back(clause3);
+
+    Clause clause4 = Clause(4);
+    Literal l4_1 = Literal(Predicate("d"));
+    l4_1.isPositive = true;
+    l4_1.terms.push_back(Term("a", true));
+    clause4.literals.push_back(l4_1);
+    customsTheorem.clauses.push_back(clause4);
+
+    Clause clause5 = Clause(5);
+    Literal l5_1 = Literal(Predicate("d"));
+    Literal l5_2 = Literal(Predicate("s"));
+    l5_1.isPositive = true;
+    l5_1.terms.push_back(Term("z", false));
+    l5_2.isPositive = false;
+    l5_2.terms.push_back(Term("a", true));
+    l5_2.terms.push_back(Term("z", false));
+    clause5.literals.push_back(l5_1);
+    clause5.literals.push_back(l5_2);
+    customsTheorem.clauses.push_back(clause5);
+
+    Clause clause6 = Clause(6);
+    Literal l6_1 = Literal(Predicate("d"));
+    Literal l6_2 = Literal(Predicate("v"));
+    l6_1.isPositive = false;
+    l6_1.terms.push_back(Term("w", false));
+    l6_2.isPositive = false;
+    l6_2.terms.push_back(Term("w", true));
+    clause6.literals.push_back(l6_1);
+    clause6.literals.push_back(l6_2);
+    customsTheorem.clauses.push_back(clause6);
+
+    Clause clause7 = Clause(7);
+    Literal l7_1 = Literal(Predicate("d"));
+    Literal l7_2 = Literal(Predicate("c"));
+    l7_1.isPositive = false;
+    l7_1.terms.push_back(Term("r", false));
+    l7_2.isPositive = false;
+    l7_2.terms.push_back(Term("r", true));
+    clause7.literals.push_back(l7_1);
+    clause7.literals.push_back(l7_2);
+    customsTheorem.clauses.push_back(clause7);
+
+    return customsTheorem;
+}
 
 int main(int argc, char** argv) 
 { 
@@ -252,12 +404,13 @@ int main(int argc, char** argv)
     // unordered_map<string, Theorem> theorems;
     Theorem howlingTheorem = constructHowling();
     Theorem rrTheorem = constructRR();
+    Theorem customsTheorem = constructCustoms();
     // theorems["howling"] = cool;
     // theorems["rr"] = constructRR();
     // theorems["customs"] = constructCustoms();
 
     // printTheorem(howlingTheorem);
-    printTheorem(rrTheorem);
+    printTheorem(customsTheorem);
 
     
 
