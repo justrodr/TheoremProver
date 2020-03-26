@@ -65,9 +65,11 @@ struct Theorem {
 struct SingleSubstitution {
     Term origTerm;
     Term newTerm;
+    bool isFail;
     SingleSubstitution(Term o, Term n) {
         origTerm = o;
         newTerm = n;
+        isFail = false;
     }
 };
 
@@ -102,6 +104,14 @@ void printTheorem(Theorem t) {
         printClause(t.clauses.at(i));
     }
     cout << endl;
+}
+
+void printSubstitution(vector<SingleSubstitution> sub) {
+    cout << "{";
+    for (int i = 0; i < sub.size(); i++) {
+        cout << sub.at(i).origTerm.val << "/" << sub.at(i).newTerm.val << ",";
+    }
+    cout << "}" << endl;
 }
 
 Theorem constructHowling() {
@@ -403,13 +413,16 @@ Theorem constructCustoms() {
     return customsTheorem;
 }
 
-Clause resolve(Clause c1, Clause c2) {
+Clause resolve(Clause c1, Clause c2, vector<SingleSubstitution> sub) {
     cout << "Resolving" << endl;
+    printClause(c1);
+    printClause(c2);
+
     return c1;
 }
 
-vector<SingleSubstitution> unify(Clause c1, Clause c2) {
-    cout << "unifying clause " << c1.clauseNumber << " and clause " << c2.clauseNumber << endl;
+vector<SingleSubstitution> unify(Literal l1, Literal l2) {
+    // cout << "unifying literal " << l1.pred << " and literal " << l2.pred << endl;
     vector<SingleSubstitution> subsitution;
     return subsitution;
 }
@@ -425,15 +438,21 @@ bool clausesAreEqual(Clause c1, Clause c2) {
     }
 
     for (int i = 0; i < c1.literals.size(); i++) {
+
         if (c1.literals.at(i).pred.name == c2.literals.at(i).pred.name) {
+
             for (int j = 0; j < c1.literals.at(i).terms.size(); j++) {
+
                 if (c1.literals.at(i).terms.at(j).val == c2.literals.at(i).terms.at(j).val) {
-                    if (c1.literals.at(i).terms.at(j).isConstant || c2.literals.at(i).terms.at(j).isConstant) {
+
+                    if ((c1.literals.at(i).terms.at(j).isConstant && !c2.literals.at(i).terms.at(j).isConstant) || (!c1.literals.at(i).terms.at(j).isConstant && c2.literals.at(i).terms.at(j).isConstant)) {
                         cout << "Not equal" << endl;
                         return false;
                     }
+
                 }
             }
+
         } else {
             cout << "Not equal" << endl;
             return false;
@@ -447,7 +466,7 @@ bool clausesAreEqual(Clause c1, Clause c2) {
 bool clauseAlreadyExists(Clause newClause, vector<Clause> existingClauses) {
     cout << "Checking for duplicates: " << endl;
     printClause(newClause); 
-    for (int i=0; i < existingClauses.size(); i++) {
+    for (int i = 0; i < existingClauses.size(); i++) {
         if (clausesAreEqual(newClause, existingClauses.at(i))) {
             cout << "Already exists" << endl;
             return true;
@@ -462,6 +481,7 @@ void solveTheorem(Theorem theorem) {
     //While 
 
     cout << "Solving: " << theorem.name << endl;
+    printTheorem(theorem);
 
     int innerLoopIndex = 0;
     int outerLoopIndex = theorem.startSolutionIndex;
@@ -471,19 +491,32 @@ void solveTheorem(Theorem theorem) {
         cout << "Outer Loop Index: " << outerLoopIndex << endl;
         cout << "Num clauses: " << theorem.clauses.size() << endl;
 
-        vector<SingleSubstitution> substitution = unify(theorem.clauses.at(innerLoopIndex), theorem.clauses.at(outerLoopIndex));
-        if (!substitution.empty()) {
-            Clause newClause = resolve(theorem.clauses.at(innerLoopIndex), theorem.clauses.at(innerLoopIndex));
-            if (!clauseAlreadyExists(newClause, theorem.clauses)) {
-                cout << "Adding clause to theorem" << endl;
-                theorem.clauses.push_back(newClause);
-                printTheorem(theorem);
-            } else {
-                cout << "Duplicate. No new clause added" << endl;
+        //Find all unifiable pairs of literals
+        //For each pair of literals, resolve the clauses and add to newClause to theorem clauses
+        Clause innerClause = theorem.clauses.at(innerLoopIndex);
+        Clause outerClause = theorem.clauses.at(outerLoopIndex);
+        printClause(innerClause);
+        printClause(outerClause);
+
+        for (int i = 0; i < outerClause.literals.size(); i++) {
+            for (int j = 0; j < innerClause.literals.size(); j++) {
+                vector<SingleSubstitution> sub = unify(outerClause.literals.at(i), innerClause.literals.at(j));
+                if (!sub.empty() && sub.at(0).isFail != true) { //not unifiable
+                    cout << "Unifiable!" << endl;
+                    printSubstitution(sub);
+                    Clause newClause = resolve(outerClause, innerClause, sub);
+                    if (!clauseAlreadyExists(newClause, theorem.clauses)) {
+                        cout << "Adding clause to theorem" << endl;
+                        newClause.clauseNumber = theorem.clauses.size();
+                        theorem.clauses.push_back(newClause);
+                        printTheorem(theorem);
+                    } else {
+                        cout << "Duplicate. No new clause added" << endl;
+                    }       
+                } else {
+                    cout << "Not unifiable" << endl;
+                }
             }
-            
-        } else {
-            cout << "Substitution is empty. No new clause added" << endl;
         }
 
         innerLoopIndex++;
