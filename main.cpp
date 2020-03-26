@@ -12,6 +12,10 @@ struct Term {
       val = value;
       isConstant = constant;
     };
+    Term() {
+        val = "";
+        isConstant = true;
+    }
 };
 
 struct Predicate {
@@ -58,13 +62,14 @@ struct Theorem {
     }
 };
 
-void printTerm(Term t) {
-
-}
-
-void printPredicate(Predicate p) {
-
-}
+struct SingleSubstitution {
+    Term origTerm;
+    Term newTerm;
+    SingleSubstitution(Term o, Term n) {
+        origTerm = o;
+        newTerm = n;
+    }
+};
 
 void printLiteral(Literal l) {
     if (!l.isPositive) {
@@ -398,19 +403,128 @@ Theorem constructCustoms() {
     return customsTheorem;
 }
 
+Clause resolve(Clause c1, Clause c2) {
+    cout << "Resolving" << endl;
+    return c1;
+}
+
+vector<SingleSubstitution> unify(Clause c1, Clause c2) {
+    cout << "unifying clause " << c1.clauseNumber << " and clause " << c2.clauseNumber << endl;
+    vector<SingleSubstitution> subsitution;
+    return subsitution;
+}
+
+bool clausesAreEqual(Clause c1, Clause c2) {
+    cout << "Checking if clauses are equal" << endl;
+    printClause(c1);
+    printClause(c2);
+    
+
+    if (c1.literals.size() != c2.literals.size()) {
+        return false;
+    }
+
+    for (int i = 0; i < c1.literals.size(); i++) {
+        if (c1.literals.at(i).pred.name == c2.literals.at(i).pred.name) {
+            for (int j = 0; j < c1.literals.at(i).terms.size(); j++) {
+                if (c1.literals.at(i).terms.at(j).val == c2.literals.at(i).terms.at(j).val) {
+                    if (c1.literals.at(i).terms.at(j).isConstant || c2.literals.at(i).terms.at(j).isConstant) {
+                        cout << "Not equal" << endl;
+                        return false;
+                    }
+                }
+            }
+        } else {
+            cout << "Not equal" << endl;
+            return false;
+        }
+    }
+
+    cout << "Equal!" << endl;
+    return true;
+}
+
+bool clauseAlreadyExists(Clause newClause, vector<Clause> existingClauses) {
+    cout << "Checking for duplicates: " << endl;
+    printClause(newClause); 
+    for (int i=0; i < existingClauses.size(); i++) {
+        if (clausesAreEqual(newClause, existingClauses.at(i))) {
+            cout << "Already exists" << endl;
+            return true;
+        }
+    }
+    cout << "Doesn't exist yet!" << endl;
+    return false;
+}
+
+void solveTheorem(Theorem theorem) {
+    //Set pointers
+    //While 
+
+    cout << "Solving: " << theorem.name << endl;
+
+    int innerLoopIndex = 0;
+    int outerLoopIndex = theorem.startSolutionIndex;
+
+    while (outerLoopIndex < theorem.clauses.size()) {
+        cout << "Inner Loop Index: " << innerLoopIndex << endl;
+        cout << "Outer Loop Index: " << outerLoopIndex << endl;
+        cout << "Num clauses: " << theorem.clauses.size() << endl;
+
+        vector<SingleSubstitution> substitution = unify(theorem.clauses.at(innerLoopIndex), theorem.clauses.at(outerLoopIndex));
+        if (!substitution.empty()) {
+            Clause newClause = resolve(theorem.clauses.at(innerLoopIndex), theorem.clauses.at(innerLoopIndex));
+            if (!clauseAlreadyExists(newClause, theorem.clauses)) {
+                cout << "Adding clause to theorem" << endl;
+                theorem.clauses.push_back(newClause);
+                printTheorem(theorem);
+            } else {
+                cout << "Duplicate. No new clause added" << endl;
+            }
+            
+        } else {
+            cout << "Substitution is empty. No new clause added" << endl;
+        }
+
+        innerLoopIndex++;
+        if (innerLoopIndex == outerLoopIndex) {
+            innerLoopIndex = 0;
+            outerLoopIndex++;
+        }
+    }
+
+    cout << "Not solvable" << endl;
+}
+
 int main(int argc, char** argv) 
 { 
-    //Construct theorems
-    // unordered_map<string, Theorem> theorems;
     Theorem howlingTheorem = constructHowling();
     Theorem rrTheorem = constructRR();
     Theorem customsTheorem = constructCustoms();
-    // theorems["howling"] = cool;
-    // theorems["rr"] = constructRR();
-    // theorems["customs"] = constructCustoms();
 
-    // printTheorem(howlingTheorem);
-    printTheorem(customsTheorem);
+    if (argc < 3) { return 0; }
+    vector<string> inputs;
+    for (int i = 1; i < argc; ++i) { 
+        istringstream ss(argv[i]);
+        string x;
+        if (!(ss >> x)) {
+            std::cerr << "Invalid number: " << argv[1] << '\n';
+        } else if (!ss.eof()) {
+            std::cerr << "Trailing characters after number: " << argv[1] << '\n';
+        } else {
+            inputs.push_back(x);
+        }
+    }
+
+    if (inputs.at(0) == "howling") {
+        solveTheorem(howlingTheorem);
+    } else if (inputs.at(0) == "rr") {
+        solveTheorem(rrTheorem);
+    } else if (inputs.at(0) == "customs") {
+        solveTheorem(customsTheorem);
+    } else {
+        cout << "No theorem to solve" << endl;
+    }
 
     
 
